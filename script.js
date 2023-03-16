@@ -103,7 +103,15 @@ btnLogin.addEventListener("click", (e) => {
 });
 
 const updateUI = (currentAccount) => {
-  document.querySelector('movements').innerHTML=''
+  //document.querySelector('movements').innerHTML = ''
+  //limpiar mv antiguos
+  // insert con insertAdjacentHTML
+  //comprobar si son positivos o negativos para los inserciones
+  const mvHtml = `<div class="movements__row">
+          <div class="movements__type movements__type--deposit">2 deposit</div>
+          <div class="movements__date">3 days ago</div>
+          <div class="movements__value">4 000€</div>
+        </div>`;
   //obtener mv
   const movements = currentAccount.movements; // o hacer tambien const {movements}=curranAccout : devuelve lo mismo
   //mostrar mov
