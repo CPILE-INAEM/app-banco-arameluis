@@ -95,5 +95,51 @@ btnLogin.addEventListener("click", (e) => {
       currentAccount.owner.split("")[0]
     }`;
     containerApp.style.opacity = 100;
+    inputLoginUsername.value = inputLoginPin == "";
+    inputLoginPin.blur();
+    //mostrar datos
+    updateUI(currentAccount);
   }
 });
+
+const updateUI = (currentAccount) => {
+  document.querySelector('movements').innerHTML=''
+  //obtener mv
+  const movements = currentAccount.movements; // o hacer tambien const {movements}=curranAccout : devuelve lo mismo
+  //mostrar mov
+  displayMovement(movements);
+  //mostrar balance
+  calcAndDisplayBalance(movements);
+
+  //mostrar resumen
+  calcAndDisplaySumary(movements);
+};
+// calculamos el balance
+const calcAndDisplayBalance = (currentAccount) => {
+  const balance = currentAccount.reduce((acc, mov) => acc + mov, 0);
+  labelBalance.textContent = `${balance.toFixed(2)}€`;
+};
+const calcAndDisplaySumary = (currentAccount) => {
+  const { movements } = currentAccount;
+
+  const sumary = currentAccount
+    .filter((mov) => mov > 0)
+    .reduce((acc, mov) => acc + mov, 0);
+  labelSumIn.textContent = `${sumary}`;
+
+  const out = movements
+    .filter((mov) => mov < 0)
+    .reduce((acc, mov) => acc + mov, 0);
+  labelSumOut.textContent = `${Math.abs(out).toFixed(2)}`;
+
+  //calculo de intereses
+
+  const interest = movements
+    .filter((mov) => mov > 100)
+    .map((mov) => (mov * currentAccount.interestRate) / 100)
+    .filter((int) => int >= 2)
+    .reduce((acc, int) => acc + int, 0);
+  labelSumInterest.textContent = `${interest.toFixed(2)}`;
+};
+
+const displayMovement = (movements) => {};
