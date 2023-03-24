@@ -35,6 +35,12 @@ const account4 = {
 
 const accounts = [account1, account2, account3, account4]
 
+accounts.forEach((account) => {
+  account.movements = account.movements.map(
+    (a) => (a = { date: '2021-02-01', value: a })
+  )
+})
+
 // Elements
 const labelWelcome = document.querySelector('.welcome')
 const labelDate = document.querySelector('.date')
@@ -72,28 +78,85 @@ const createUsernames = () => {
   })
 }
 createUsernames()
-console.log(accounts)
 btnLogin.addEventListener('click', (e) => {
   e.preventDefault()
   const username = inputLoginUsername.value
   const pin = Number(inputLoginPin.value)
-
   const currentAccount = accounts.find(
     (account) => account.username === username
   )
 
-  //Si la cuenta no existe porque no hay un usuario con ese nombre, la variable currentAccount es nula y al acceder al pin de un objeto nulo da error
-  //Opción clásica para solventarlo
-
-  /*if (current account && currentAccount.pin === pin) {
-    console.log('Credenciales correctas')
-  }*/
-  //Ahora se usa '?' similar al operador de resolución de nulos de php
+  //Si la cuenta no existe porque no hay un usuario con ese nombre,
+  // la variable currentAccount es nula y al acceder al pin de un objeto nulo da error
+  //se soluciona con el operador '?'
   if (currentAccount?.pin === pin) {
     console.log('Credenciales correctas')
     labelWelcome.textContent = `Bienvenido ${
       currentAccount.owner.split(' ')[0]
     }`
     containerApp.style.opacity = 100
+    inputLoginUsername.value = inputLoginPin.value = ''
+    inputLoginPin.blur()
+    updateUI(currentAccount)
+  }
+})
+const updateUI = (currentAccount) => {
+  const { movements } = currentAccount
+  const values = movements.map(({ value }) => value)
+  calcAndDisplayBalance(values)
+  calcAndDisplaySummary(currentAccount.interestRate, values)
+  showMovements(currentAccount)
+}
+const calcAndDisplayBalance = (movements) => {
+  const { value } = movements
+  const balance = movements.reduce((acc, curr) => acc + curr, 0)
+  labelBalance.textContent = balance.toFixed(2)
+}
+const calcAndDisplaySummary = (interestRate, movements) => {
+  const incomes = movements
+    .filter((mov) => mov > 0)
+    .reduce((acc, mov) => acc + mov, 0)
+  labelSumIn.textContent = incomes.toFixed(2)
+  const out = movements
+    .filter((mov) => mov < 0)
+    .reduce((acc, mov) => acc + mov, 0)
+  labelSumOut.textContent = out.toFixed(2)
+  // calculo de intereses:
+  // Teniendo en cuenra solo los ingresos superioores a 100€
+  // y que el interes es de cada usuario
+  // y que los intereses sean superiores a 2€
+  const interest = movements
+    .filter((mov) => mov > 100)
+    .map((mov) => (mov * interestRate) / 100)
+    .filter((int) => int > 2)
+    .reduce((acc, int) => acc + int, 0)
+  labelSumInterest.textContent = interest.toFixed(2)
+}
+const showMovements = (currentAccount) => {
+  const { movements } = currentAccount
+  containerMovements.innerHTML = ''
+  movements.forEach((mov, i) => {
+    const { value, date } = mov
+    const type = value > 0 ? 'deposit' : 'withdrawal'
+    const movHTML = `<div class="movements__row">
+          <div class="movements__type movements__type--${type}"> ${
+      i + 1
+    } ${type} </div>
+          <div class="movements__date">${date}</div>
+          <div class="movements__value">${value}€</div>
+        </div>`
+
+    containerMovements.insertAdjacentHTML('afterbegin', movHTML)
+  })
+}
+btnTransfer.addEventListener('click', (e) => {
+  e.preventDefault()
+  const sendingAccount = accounts.find(
+    (account) => account.owner === inputTransferTo
+  )
+  if (
+    sendingAccount &&
+    inputTransferAmount <= Number(labelBalance.textContent)
+  ) {
   }
 })
