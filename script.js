@@ -150,4 +150,51 @@ const calcAndDisplaySumary = (currentAccount) => {
   labelSumInterest.textContent = `${interest.toFixed(2)}`;
 };
 
-const displayMovement = (movements) => {};
+// transferencias entre cuenta
+const movimientos = [
+  {
+    date: "2021-01-01",
+    cuantia: 1000,
+  },
+  {
+    date: "2021-01-02",
+    cuantia: 2000,
+  },
+  {
+    date: "2021-01-03",
+    cuantia: 3000,
+  },
+  {
+    date: "2021-01-04",
+    cuantia: 4000,
+  },
+  {
+    date: "2021-01-05",
+    cuantia: 5000,
+  },
+  {
+    date: "2021-01-06",
+    cuantia: 6000,
+  },
+  {
+    date: "2021-01-07",
+    cuantia: 7000,
+  },
+  {
+    date: "2021-01-08",
+    cuantia: 8000,
+  },
+];
+
+const cuantia = Number(inputTransferAmount.value);
+
+inputTransferTo.addEventListener(function transfer(orig, dest, cuantia) {
+  let Acountorigin = accounts.find((accounts) => accounts.owner == orig);
+  let Accountdest = accounts.find((accounts) => accounts.owner == dest);
+  if (Acountorigin.cuantia < cuantia) {
+    const msj = "No tienes suficiente saldo ";
+    console.log(msj);
+  } else Accountdest = cuantia++;
+      Acountorigin = cuantia--;
+  return "La transferencia ha sido un exito";
+});
