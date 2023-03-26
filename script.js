@@ -160,3 +160,49 @@ btnTransfer.addEventListener('click', (e) => {
   ) {
   }
 })
+
+const movements = [
+  {
+    date: '2021-01-01',
+    value: 1000,
+  }
+{
+    date: '2021-01-02',
+    value: 2000,
+  },
+{
+    date: '2021-01-03',
+    value: 3000,
+  },
+{
+    date: '2021-01-03',
+    value: 4000,
+  },
+{
+    date: '2021-01-03',
+    value: 5000,
+  },
+{
+    date: '2021-01-03',
+    value: 6000,
+  },
+{
+    date: '2021-01-03',
+    value: 7000,
+  },
+{
+    date: '2021-01-03',
+    value: 8000,
+  }]
+
+btnTransfer.addEventListener("click",transfer)
+function transfer(origen,destinatario, cuantia){
+  cuantia=labelBalance.value
+  if(!(origen in accounts) || !(destinatario in accounts)){
+    return `Los usuarios deben existir`
+  }
+  if(accounts[origen].value < cuantia)
+  const msj=`No tienes suficiente saldo`
+  console.log(msj)
+  
+}
