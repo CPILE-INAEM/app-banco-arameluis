@@ -201,7 +201,7 @@ function transfer(origen,destinatario, saldo){
   const transferTo = inputTransferTo.value
   const transferAmount = Number(inputTransferAmount.value)
   if (transferTo.trim() === '' || transferAmount <= 0 || transferAmount > labelBalance) {
-    alert('Por favor, ingrese un destinatario válido y un monto a transferir válido.')
+    alert('Por favor, ingrese un destinatario válido y una cantidad a transferir válido.')
     
     //verificar usuario origen y usuario destino
   if(!(origen in accounts) || !(destinatario in accounts)){
