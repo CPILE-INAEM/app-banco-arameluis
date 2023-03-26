@@ -164,45 +164,56 @@ btnTransfer.addEventListener('click', (e) => {
 const movements = [
   {
     date: '2021-01-01',
-    value: 1000,
+    saldo: 1000,
   }
 {
     date: '2021-01-02',
-    value: 2000,
+    saldo: 2000,
   },
 {
     date: '2021-01-03',
-    value: 3000,
+    saldo: 3000,
   },
 {
     date: '2021-01-03',
-    value: 4000,
+    saldo: 4000,
   },
 {
     date: '2021-01-03',
-    value: 5000,
+    saldo: 5000,
   },
 {
     date: '2021-01-03',
-    value: 6000,
+    saldo: 6000,
   },
 {
     date: '2021-01-03',
-    value: 7000,
+    saldo: 7000,
   },
 {
     date: '2021-01-03',
-    value: 8000,
+    saldo: 8000,
   }]
 
 btnTransfer.addEventListener("click",transfer)
-function transfer(origen,destinatario, cuantia){
-  cuantia=labelBalance.value
+function transfer(origen,destinatario, saldo){
+  saldo=labelBalance.value
+  const transferTo = inputTransferTo.value
+  const transferAmount = Number(inputTransferAmount.value)
+  if (transferTo.trim() === '' || transferAmount <= 0 || transferAmount > labelBalance) {
+    alert('Por favor, ingrese un destinatario válido y un monto a transferir válido.')
+    
+    //verificar usuario origen y usuario destino
   if(!(origen in accounts) || !(destinatario in accounts)){
     return `Los usuarios deben existir`
   }
-  if(accounts[origen].value < cuantia)
+  //verificar si tiene suficiente saldo
+  if(accounts[origen].value < saldo){
   const msj=`No tienes suficiente saldo`
   console.log(msj)
+  }
+  accounts[origen].value=saldo--;
+  accounts[destinatario].value=saldo++;
+  }
   
 }
