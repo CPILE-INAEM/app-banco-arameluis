@@ -217,3 +217,32 @@ function transfer(origen,destinatario, saldo){
   }
   
 }
+
+//prestamos
+
+btnLoan.addEventListener("click", (e) => {
+  e.preventDefault();
+   console.log("hola mundo");
+  const amount = Number(inputLoanAmount.value);
+  console.log("previo");
+  console.log(amount);
+  console.log(balance);
+  const reciente = new Date();
+  const hora = reciente.getHours();
+  const minuto = reciente.getMinutes();
+  const second = reciente.getSeconds();
+  if (amount > 0) {
+    console.log(currentAccount.movements);
+    currentAccount.movements.push({
+      date:
+        reciente.toISOString().slice(0, 10) +" " +hora +":" +minuto+":" +second,
+      value: amount,
+    });
+    balance += amount;
+    updateUI(currentAccount);
+  }
+
+  inputLoanAmount.value = "";
+});
+
+
