@@ -3,36 +3,47 @@
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // BANKIST APP
-// Data
-const account1 = {
-  owner: 'Juan Sánchez',
-  movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
-  interestRate: 1.2, // %
-  pin: 1111,
+
+// Zona de carga asincrona
+
+let accounts = null
+const url = 'http://localhost:3010/'
+async function getAccounts(url) {
+  const response = await fetch(url)
+  const data = await response.json()
+  accounts = data
+  const createUsernames = () => {
+    accounts.forEach((account) => {
+      account.username = account.owner
+        .toLowerCase()
+        .split(' ')
+        .map((name) => name[0])
+        .join('')
+    })
+  }
+  createUsernames()
+  console.log(accounts)
+}
+getAccounts(url)
+
+async function getAccounts() {
+  const response = await fetch('http://localhost:3010/update/', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(accounts),
+  })
+    .then((res) => res.json())
+    .then((data) => console.log(data))
+    .catch((err) => console.error(err))
 }
 
-const account2 = {
-  owner: 'María Portazgo',
-  movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
-  interestRate: 1.5,
-  pin: 2222,
-}
+//const accounts = getAccounts(url)
+//console.log(accounts)
 
-const account3 = {
-  owner: 'Estefanía Pueyo',
-  movements: [200, -200, 340, -300, -20, 50, 400, -460],
-  interestRate: 0.7,
-  pin: 3333,
-}
-
-const account4 = {
-  owner: 'Javier Rodríguez',
-  movements: [430, 1000, 700, 50, 90],
-  interestRate: 1,
-  pin: 4444,
-}
-
-const accounts = [account1, account2, account3, account4]
+/************************************* Zona de carga sincrona ********************************************
+ **********************************************************************************************************/
 
 // Metodo para formatear la fecha en el formato inicial que propone el ejercicio
 const formatDate = (fecha) => {
@@ -62,12 +73,6 @@ const fakeDate = () => {
 
 const fakeAmount = () => Math.floor(Math.random() * 200000 - 50000) / 100
 
-accounts.forEach((account) => {
-  account.movements = account.movements
-    .map((a) => (a = { date: fakeDate(), value: fakeAmount() }))
-    .sort((a, b) => a.date - b.date)
-})
-
 // Elements
 const labelWelcome = document.querySelector('.welcome')
 const labelDate = document.querySelector('.date')
@@ -86,6 +91,7 @@ const btnTransfer = document.querySelector('.form__btn--transfer')
 const btnLoan = document.querySelector('.form__btn--loan')
 const btnClose = document.querySelector('.form__btn--close')
 const btnSort = document.querySelector('.btn--sort')
+const btnSortRev = document.querySelector('.btn--sort--rev')
 
 const inputLoginUsername = document.querySelector('.login__input--user')
 const inputLoginPin = document.querySelector('.login__input--pin')
@@ -97,18 +103,6 @@ const inputClosePin = document.querySelector('.form__input--pin')
 
 let logedAccount = null
 
-//Init data
-
-const createUsernames = () => {
-  accounts.forEach((account) => {
-    account.username = account.owner
-      .toLowerCase()
-      .split(' ')
-      .map((name) => name[0])
-      .join('')
-  })
-}
-createUsernames()
 btnLogin.addEventListener('click', (e) => {
   e.preventDefault()
   const username = inputLoginUsername.value
@@ -133,6 +127,10 @@ btnLogin.addEventListener('click', (e) => {
     btnLogout.style.display = 'initial'
     updateUI(currentAccount)
   }
+
+  // metodos a meter en zona asincrona
+
+  //Init data
 })
 
 // Implementamos un boton de logout
@@ -154,7 +152,7 @@ const updateUI = (currentAccount) => {
   showMovements(currentAccount)
 }
 const calcAndDisplayBalance = (movements) => {
-  const { value } = movements
+  console.log(movements)
   const balance = movements.reduce((acc, curr) => acc + curr, 0)
   labelBalance.textContent = balance.toFixed(2)
 }
@@ -274,7 +272,18 @@ btnClose.addEventListener('click', function (e) {
 btnSort.addEventListener('click', (e) => {
   e.preventDefault()
   logedAccount.movements = logedAccount.movements.sort(
-    (a, b) => a.value - b.value
+    (a, b) => a.date.split('-').join('') - b.date.split('-').join('')
   )
+  btnSortRev.style.display = 'initial'
+  btnSort.style.display = 'none'
+  updateUI(logedAccount)
+})
+btnSortRev.addEventListener('click', (e) => {
+  e.preventDefault()
+  logedAccount.movements = logedAccount.movements.sort(
+    (a, b) => b.date.split('-').join('') - a.date.split('-').join('')
+  )
+  btnSortRev.style.display = 'none'
+  btnSort.style.display = 'initial'
   updateUI(logedAccount)
 })
